@@ -176,8 +176,9 @@ def voteTable(id):
 def vote(id):
     user = current_user
     candidate = Candidate.query.get(id)
-    # 生成id的方式,此处采用简单的hash
-    log = VoteLog.query.get((10007*user.id+candidate.theme_id)%10007)
+    # 生成id
+    log = VoteLog.query.get((10007*user.id+candidate.theme_id*10009)%10039)
+    print(user.id,candidate.theme_id,(10007*user.id+candidate.theme_id*10009)%10039)
     if log:
         flash("您已投票，请勿重复投票")
         return redirect(url_for("voteTable", id=candidate.theme_id))
@@ -186,7 +187,7 @@ def vote(id):
         db.session.commit()
         flash("You have successfully voted for " + candidate.name)
         db.session.add(
-            VoteLog(id=(10007*user.id+candidate.theme_id)%10007, user_id=user.id, theme_id=candidate.theme_id)
+            VoteLog(id=(10007*user.id+candidate.theme_id*10009)%10039, user_id=user.id, theme_id=candidate.theme_id)
         )
         db.session.commit()
         return redirect(url_for("voteTable", id=candidate.theme_id))
