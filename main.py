@@ -44,8 +44,12 @@ class VoteTheme(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     theme = db.Column(db.Text)
 
-    def get_id(self):
-        return self.id
+
+class VoteLog(db.Model):
+    __tablename__ = "votelog"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)
+    theme_id = db.Column(db.Integer)
 
 
 # login页面表单
@@ -170,11 +174,22 @@ def voteTable(id):
 @app.route("/vote/<id>", methods=["GET", "POST"])
 @login_required
 def vote(id):
+    user = current_user
     candidate = Candidate.query.get(id)
-    candidate.votes += 1
-    db.session.commit()
-    flash("You have successfully voted for " + candidate.name)
-    return redirect(url_for("voteTable", id=candidate.theme_id))
+    # 生成id的方式,此处采用简单的hash
+    log = VoteLog.query.get((10007*user.id+candidate.theme_id)%10007)
+    if log:
+        flash("您已投票，请勿重复投票")
+        return redirect(url_for("voteTable", id=candidate.theme_id))
+    else:
+        candidate.votes += 1
+        db.session.commit()
+        flash("You have successfully voted for " + candidate.name)
+        db.session.add(
+            VoteLog(id=(10007*user.id+candidate.theme_id)%10007, user_id=user.id, theme_id=candidate.theme_id)
+        )
+        db.session.commit()
+        return redirect(url_for("voteTable", id=candidate.theme_id))
 
 
 @app.route("/creatCandidate", methods=["GET", "POST"])

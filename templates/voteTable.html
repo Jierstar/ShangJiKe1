@@ -2,17 +2,22 @@
 
 {%block title%}{{title}}{%endblock%}
 {%block page_content%}
-
+<h3>{{title}}</h3>
 {% for candidate in candidateList %}
-    <div>
-        {{candidate.name}}  目前得票：{{candidate.votes}}
-        <a class="btn" href={{url_for('vote',id=candidate.id)}}>投票</a>
-        <br>
-        {%if candidate.intro%}
-            {{candidate.intro}}
-        {%else%}
-            No introduce for this candidate.
-        {%endif%}
+    <div class="card text-white " style="width: 40% ">
+      <div class="card-body">
+        <h3 class="card-title bg-primary">{{candidate.name}}</h3>
+
+            {%if candidate.intro%}
+                <p>{{candidate.intro}}</p>
+            {%else%}
+                <p class="text-muted font-italic">No introduce for this candidate.<p>
+            {%endif%}
+            <p>目前已获得{{candidate.votes}}票</p>
+        <a class="btn btn-success" href={{url_for('vote',id=candidate.id)}}>投票</a>
+      </div>
     </div>
+    <br>
 {% endfor %}
+<a class = "btn btn-primary" href={{url_for("voteHomepage")}}>返回选择</a>
 {%endblock%}
