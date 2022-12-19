@@ -1,0 +1,18 @@
+{%extends "base.html"%}
+
+{%block title%}{{title}}{%endblock%}
+{%block page_content%}
+
+{% for candidate in candidateList %}
+    <div>
+        {{candidate.name}}  目前得票：{{candidate.votes}}
+        <a class="btn" href={{url_for('vote',id=candidate.id)}}>投票</a>
+        <br>
+        {%if candidate.intro%}
+            {{candidate.intro}}
+        {%else%}
+            No introduce for this candidate.
+        {%endif%}
+    </div>
+{% endfor %}
+{%endblock%}

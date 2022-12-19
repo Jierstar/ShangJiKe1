@@ -2,20 +2,20 @@
 
 {%block title%}index{%endblock%}
 {%block page_content%}
-{% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert"
-                    aria-hidden="true">
-                &times;
-            </button>
-            {{ message }}
-        </div>
-{% endfor %}
     <div class = container>
         <p>用户名: {{username}}</p>
     </div>
     <div>
         <a href="/admin">管理员</a>
+    </div>
+    <div>
+        <a href="/voteHomepage">投票</a>
+    </div>
+    <div>
+        <a href={{url_for("creatCand")}}>新建候选人</a>
+    </div>
+    <div>
+        <a href={{url_for("creatTheme")}}>新建主题</a>
     </div>
 <a class = "btn" href = {{url_for("logout")}}>登出</a>
 {%endblock%}
