@@ -74,7 +74,7 @@ class ThemeForm(FlaskForm):
 # admin视图
 class MyAdminIndexView(AdminIndexView):
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.authority
+        return current_user.is_authenticated and current_user.authority >= 2
 
     def inaccessible_callback(self, name, **kwargs):
         flash("您没有权限")
@@ -180,6 +180,10 @@ def vote(id):
 @app.route("/creatCandidate", methods=["GET", "POST"])
 @login_required
 def creatCand():
+    if current_user.authority < 1:
+        flash("您没有权限，如需升级权限请联系管理员")
+        return redirect(url_for("index"))
+
     form = CandidateForm()
     if form.validate_on_submit():
         theme = VoteTheme.query.get(form.themeId.data)
@@ -200,6 +204,9 @@ def creatCand():
 @app.route("/creatTheme", methods=["GET", "POST"])
 @login_required
 def creatTheme():
+    if current_user.authority < 1:
+        flash("您没有权限，如需升级权限请联系管理员")
+        return redirect(url_for("index"))
     form = ThemeForm()
     if form.validate_on_submit():
         db.session.add(
